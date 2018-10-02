@@ -6,11 +6,12 @@
 // Битовое поле
 
 #include "tbitfield.h"
+int SIZE = sizeof(TELEM);
 
 TBitField::TBitField(int len)
 {
 	BitLen = len;
-	MemLen = ceil((double)BitLen/sizeof(TELEM));
+	MemLen = ceil((double)BitLen/SIZE);
 	pMem = new TELEM[MemLen];
 }
 
@@ -31,7 +32,7 @@ TBitField::~TBitField()
 
 int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
 {
-	return (MemLen - n/sizeof(TELEM));
+	return (MemLen - n/SIZE);
 }
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
@@ -50,16 +51,26 @@ int TBitField::GetLength(void) const // получить длину (к-во б�
 
 void TBitField::SetBit(const int n) // установить бит
 {
-
+  int i = MemLen - int(n/SIZE);
+  int k = n % SIZE;
+  pMem[i] = pMem[i] | (1 << k);
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
-{
+{	
+  int i = MemLen - int(n/SIZE);
+  int k = n % SIZE;
+  pMem[i] = pMem[i] & !(1 << k);
 }
 
 int TBitField::GetBit(const int n) const // получить значение бита
 {
-  return 0;
+	if (n > BitLen) throw "Error: check the number of bit";
+	int i = MemLen - int(n/SIZE);
+	int k = n % SIZE;
+	int m = 1 << k;
+	if (pMem[i] && m) return 1;
+	else return 0;
 }
 
 // битовые операции
@@ -89,7 +100,7 @@ int TBitField::operator!=(const TBitField &bf) const // сравнение
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 {
-	//добавить throw ex, если разной длины
+	if (GetLength() != bf.GetLength()) throw "Error: lengths don't match";
 	TBitField Tnew(GetLength());
 	for(int i = 0; i < Tnew.MemLen; i++) {
 		Tnew.pMem[i] = pMem[i] | bf.pMem[i];
@@ -98,8 +109,8 @@ TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 }
 
 TBitField TBitField::operator&(const TBitField &bf) // операция "и"
-	//добавить throw ex, если разной длины
 {
+	if (GetLength() != bf.GetLength()) throw "Error: lengths don't match";
 	TBitField Tnew(GetLength());
 	for(int i = 0; i < Tnew.MemLen; i++) {
 		Tnew.pMem[i] = pMem[i] & bf.pMem[i];
