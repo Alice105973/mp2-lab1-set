@@ -131,10 +131,20 @@ TBitField TBitField::operator~(void) // отрицание
 
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
+	bool a;
+	for (int i = 0; i < bf.BitLen; i++) {
+		istr >> a;
+		if (a) bf.SetBit(i);
+		else bf.ClrBit(i);
+	}
 	return istr;
 }
 
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
+	for (int i = bf.BitLen - 1; i <= 0; i--) {
+		ostr << bf.GetBit(i);
+	}
+	ostr << endl;
 	return ostr;
 }
