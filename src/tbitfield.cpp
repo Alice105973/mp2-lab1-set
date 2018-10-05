@@ -53,14 +53,14 @@ void TBitField::SetBit(const int n) // установить бит
 {
   int i = MemLen - int(n/SIZE);
   int k = n % SIZE;
-  pMem[i] = pMem[i] | (1 << k);
+  pMem[i] = pMem[i] | (GetMemMask(k));
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
 {	
   int i = MemLen - int(n/SIZE);
   int k = n % SIZE;
-  pMem[i] = pMem[i] & !(1 << k);
+  pMem[i] = pMem[i] & !(GetMemMask(k));
 }
 
 int TBitField::GetBit(const int n) const // получить значение бита
@@ -68,7 +68,7 @@ int TBitField::GetBit(const int n) const // получить значение б
 	if (n > BitLen) throw "Error: check the number of bit";
 	int i = MemLen - int(n/SIZE);
 	int k = n % SIZE;
-	int m = 1 << k;
+	int m = GetMemMask(k);
 	if (pMem[i] && m) return 1;
 	else return 0;
 }
