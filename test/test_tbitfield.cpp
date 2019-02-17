@@ -314,7 +314,7 @@ TEST(TBitField, bitfields_with_different_bits_are_not_equal)
 
 
 
-TEST(TBitField, MYTEST_can_compare_equally_bitfields_1)
+TEST(TBitField, MYTEST_can_compare_equal_bitfields_1)
 {
   const int size = 4;
   TBitField bf1(size), bf2(size);
